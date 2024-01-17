@@ -1,8 +1,9 @@
-import './App.css';
 import { Component } from 'react';
 
-import { loadPosts } from './utils/load-posts';
-import { Posts } from './components/Posts';
+import './styles.css';
+
+import { Posts } from '../../components/Posts';
+import { loadPosts } from '../../utils/load-posts';
 
 
 class App extends Component {
