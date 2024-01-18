@@ -4,12 +4,16 @@ import './styles.css';
 
 import { Posts } from '../../components/Posts';
 import { loadPosts } from '../../utils/load-posts';
+import { Button } from '../../components/Button';
 
 
 class App extends Component {
 
   state = {
-    posts : []
+    posts : [],
+    allPosts: [],
+    page: 0,
+    postsPerPage: 10,
   };
 
   // const [posts, setPosts] = useState([]);
@@ -19,16 +23,42 @@ class App extends Component {
   }
 
   loadPosts = async () => {
+    const {page, postsPerPage} = this.state;
     const postsAndPhotos = await loadPosts();
-    this.setState({ posts: postsAndPhotos });
+    this.setState({ 
+      posts: postsAndPhotos.slice(page, postsPerPage), 
+      allPosts: postsAndPhotos,  
+    });
+  }
+
+  loadMorePosts = async () => {
+    const {
+      page,
+      postsPerPage,
+      allPosts,
+      posts
+    } = this.state;
+
+    const nextPage = page + postsPerPage;
+    const nextPosts = allPosts.slice(nextPage, nextPage + postsPerPage);
+    posts.push(...nextPosts);
+    this.setState({posts, page: nextPage});
   }
 
   render(){
-    const { posts } = this.state;
+    const { posts, page, postsPerPage, allPosts } = this.state;
+    const noMorePosts = page + postsPerPage >= allPosts.length;
 
     return (
       <section className='container'>
         <Posts posts={posts} />
+        <div className='button-container'>
+          <Button 
+            text="Carregar mais posts"
+            onClick={this.loadMorePosts}
+            disabled={noMorePosts}
+          />
+        </div>
       </section>
     );
 
